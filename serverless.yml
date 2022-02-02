@@ -1,0 +1,18 @@
+service: captool2-executor
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'prod'}
+  region: ${env:AWS_REGION, 'us-east-1'}
+  ecr:
+    images:
+      img:
+        path: ./
+        platform: linux/amd64
+
+functions:
+  lambda:
+    timeout: 900
+    memorySize: 1024
+    image:
+      name: img
