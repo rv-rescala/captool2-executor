@@ -13,9 +13,12 @@ RUN yum install atk cups-libs gtk3 libXcomposite alsa-lib \
     libXcursor libXdamage libXext libXi libXrandr libXScrnSaver \
     libXtst pango at-spi2-atk libXt xorg-x11-server-Xvfb \
     xorg-x11-xauth dbus-glib dbus-glib-devel -y
-RUN pip install captool2
 
-RUN yum update && yum install -y wget unzip
+# for captool
+RUN pip install captool2==0.0.7
+RUN pip install lambda_actor
+
+RUN yum update && yum install -y wget unzip procps
 RUN wget https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip \
     && unzip IPAexfont00401.zip -d /opt/browser/.fonts/ \
     && rm IPAexfont00401.zip

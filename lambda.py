@@ -13,6 +13,11 @@ from lambda_actor.actor_executor import *
 from lambda_actor.types.type_conf import ActorConf
 from lambda_actor.types.type_actor_message import *
 from regoogle.drive import *
+import logging
+import subprocess
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 BUCKET = "captool-gatsby"
 GDRIVE_CONF_PATH = "conf/google/gdrive.json"
@@ -53,11 +58,9 @@ def s3_upload(local_fullpath, order):
     s3_client = boto3.client('s3')
     s3_client.upload_file(local_fullpath, BUCKET, f"dataset/output/{order}/{filename}")
     os.remove(local_fullpath)
+    ls_file_name = os.listdir(f"/tmp/{order}")
+    print(f"tmp dir: {ls_file_name}")
     print(f"s3_upload: {local_fullpath} to dataset/output/{order}/{filename}")
-    
-    #s3_client.upload_file(f"/tmp/{order}/tmp_{filename}", BUCKET, f"dataset/output/{order}/tmp_{filename}")
-    #os.remove(f"/tmp/{order}/tmp_{filename}")
-    #print(f"s3_upload_tmp : /tmp/{order}/tmp_{filename}")
     
     return f"s3://{BUCKET}/dataset/output/{order}/{filename}"
     
@@ -93,12 +96,6 @@ def device(order) -> str:
         device = DEVICE.str_to_enum(j["device"])
     return device
 
-"""
-        executor_trigger_message_str = None
-        # for debug
-        request = CWWebDriver(execution_env=EXECUTION_ENV.AWS_LAMBDA, device = device("unext_list"))
-"""
-
 
 def handler(event, context):
     #try:
@@ -109,6 +106,11 @@ def handler(event, context):
     #gdrive = gdrive_init()
             
     def execution_func(task_message):
+        ps = subprocess.run(["ps","aux"], stdout=subprocess.PIPE, text=True).stdout.split("\n")
+        ps_chrome = list(filter(lambda x: "chrome" in x, ps))
+        len_chrome_ps = len(ps_chrome)
+        print(f"ps_chrome: {task_message}, {ps_chrome}")
+        print(f"len_chrome_ps: {task_message}, {len_chrome_ps}")
         request = CWWebDriver(execution_env=EXECUTION_ENV.AWS_LAMBDA, device = device(task_message.task_groupid))
         output_path = f"/tmp"
         message = task_message.message
@@ -117,11 +119,10 @@ def handler(event, context):
         order_name = task_message.task_groupid
         print(f"execution_func: {url},{filename},{order_name}")
         path = execute(request=request, order_name=order_name, grammar_path=grammar_path(), order_path=order_path(order_name), url=url,output_path=output_path, filename=filename)
+        request.close()
+        request.driver.quit()
         print(f"execution_func: {path}")
         s3_upload(path, order_name)
-        request.close()
-        #parents = get_id_by_key(gdrive, order_name)
-        #gdrive_upload(gdrive, path, parents)
         
 
     def success_func(message):
