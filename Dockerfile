@@ -3,6 +3,7 @@ FROM public.ecr.aws/lambda/python@sha256:2342562ecf32e72dfad88f8267ad39d78f1d397
 RUN mkdir /opt/browser 
 RUN mkdir /opt/browser/.fonts
 
+RUN yum update
 RUN yum install -y unzip && \
     curl -Lo "/tmp/chromedriver.zip" "https://chromedriver.storage.googleapis.com/97.0.4692.71/chromedriver_linux64.zip" && \
     curl -Lo "/tmp/chrome-linux.zip" "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F938549%2Fchrome-linux.zip?alt=media" && \
@@ -15,16 +16,17 @@ RUN yum install atk cups-libs gtk3 libXcomposite alsa-lib \
     xorg-x11-xauth dbus-glib dbus-glib-devel -y
 
 # for captool
-RUN pip install captool2==0.0.7
+RUN pip install captool2==0.1.2
 RUN pip install lambda_actor
-
-RUN yum update && yum install -y wget unzip procps
-RUN wget https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip \
-    && unzip IPAexfont00401.zip -d /opt/browser/.fonts/ \
-    && rm IPAexfont00401.zip
+RUN yum install -y procps
 
 # for jappanese
 RUN yum install -y ipa-gothic-fonts ipa-mincho-fonts ipa-pgothic-fonts ipa-pmincho-fonts
+
+#RUN wget https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip \
+#    && unzip IPAexfont00401.zip -d /opt/browser/.fonts/ \
+#    && rm IPAexfont00401.zip
+
 
 COPY lambda.py ./
 CMD [ "lambda.handler" ]

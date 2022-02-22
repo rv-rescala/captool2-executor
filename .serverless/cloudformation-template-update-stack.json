@@ -158,7 +158,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "Code": {
-          "ImageUri": "267162626987.dkr.ecr.ap-northeast-1.amazonaws.com/serverless-captool2-executor-prod@sha256:c9235a049b2cedcd8aa9dff5438a431ad15e084eec23737485a79a6710f8951b"
+          "ImageUri": "267162626987.dkr.ecr.ap-northeast-1.amazonaws.com/serverless-captool2-executor-prod@sha256:10e171220cd59548034651a50db13d74a72ae685a9859889f90f3c5484823475"
         },
         "PackageType": "Image",
         "FunctionName": "captool2-executor-prod-lambda",
@@ -175,14 +175,14 @@
         "LambdaLogGroup"
       ]
     },
-    "LambdaLambdaVersionmrJm68x210cyupHhXzzgYgygxKBSgsp283USlrwURE": {
+    "LambdaLambdaVersionc6t1OQMsBa6H56kt3DbUzrhgK1OsllOyXSY4sIORdw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "LambdaLambdaFunction"
         },
-        "CodeSha256": "c9235a049b2cedcd8aa9dff5438a431ad15e084eec23737485a79a6710f8951b"
+        "CodeSha256": "10e171220cd59548034651a50db13d74a72ae685a9859889f90f3c5484823475"
       }
     }
   },
@@ -198,7 +198,7 @@
     "LambdaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "LambdaLambdaVersionmrJm68x210cyupHhXzzgYgygxKBSgsp283USlrwURE"
+        "Ref": "LambdaLambdaVersionc6t1OQMsBa6H56kt3DbUzrhgK1OsllOyXSY4sIORdw"
       },
       "Export": {
         "Name": "sls-captool2-executor-prod-LambdaLambdaFunctionQualifiedArn"
